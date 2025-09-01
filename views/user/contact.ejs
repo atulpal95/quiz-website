@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Portfolio</title>
+  <!-- FontAwesome for Social Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* Soft Animated Border */
+    .animated-border {
+      position: relative;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      padding: 3px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .animated-border::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(270deg, #3b82f6, #2563eb, #1e40af, #64748b);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+      z-index: 0;
+      opacity: 0.7;
+    }
+    .animated-border > .content {
+      position: relative;
+      z-index: 1;
+      border-radius: 1.5rem;
+      background: white;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Hero Section with Animated Border -->
+  <section class="py-10 px-4 sm:px-6 lg:px-8">
+    <div class="animated-border shadow-2xl">
+      <div class="content p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16">
+
+        <!-- Left Content -->
+        <div class="w-full md:w-1/2 text-center md:text-left">
+          <p class="text-sm text-gray-600">Hi There, I'm</p>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-2">
+            Atul <span class="text-blue-600">Pal</span>
+          </h1>
+          <h2 class="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mt-2">
+            Python & AI Enthusiast
+          </h2>
+          <p class="text-gray-500 mt-4 leading-relaxed max-w-lg mx-auto md:mx-0">
+            Passionate about solving problems with Python and Artificial Intelligence. 
+            Exploring technologies and building projects to improve my skills.
+          </p>
+
+          <!-- Contact Info -->
+          <div class="mt-6 space-y-2 text-gray-700 text-sm sm:text-base">
+            <p><span class="font-semibold">📞 Phone:</span> +91-9559086271</p>
+            <p><span class="font-semibold">📧 Email:</span> palatul9559@gmail.com</p>
+          </div>
+
+          <!-- Social Links -->
+          <div class="mt-6 flex justify-center md:justify-start gap-5">
+            <a href="https://github.com/" target="_blank" class="text-gray-700 hover:text-black text-2xl sm:text-3xl transition">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="https://linkedin.com/" target="_blank" class="text-blue-700 hover:text-blue-900 text-2xl sm:text-3xl transition">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Image -->
+        <div class="w-full md:w-1/2 flex justify-center">
+          <div class="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72">
+            <div class="absolute inset-0 rounded-full border-4 border-blue-500 animate-pulse"></div>
+            <img 
+              src="https://via.placeholder.com/350" 
+              alt="profile"
+              class="relative z-10 w-full h-full object-cover rounded-full shadow-xl border-4 border-gray-100"
+            >
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

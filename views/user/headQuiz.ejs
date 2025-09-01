@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Quiz</title>
+  <style>
+   
+ 
+        body {
+          font-family: 'Arial', sans-serif;
+          background-color: #f7f7f7;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+      
+        h1 {
+          text-align: center;
+          color: #333;
+          font-size: 2rem;
+          margin-bottom: 30px;
+        }
+      
+        form {
+          background-color: #fff;
+          padding: 30px;
+          width: 100%;
+          max-width: 800px;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+      
+        label {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin-top: 15px;
+          color: #333;
+          display: block;
+        }
+      
+        input[type="text"], input[type="number"] {
+          width: 100%;
+          padding: 12px;
+          margin-top: 8px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          font-size: 1rem;
+          background-color: #fafafa;
+        }
+      
+        input[type="text"]:focus, input[type="number"]:focus {
+          outline: none;
+          border-color: #007bff;
+          background-color: #fff;
+        }
+      
+        button {
+          width: 100%;
+          padding: 12px;
+          margin-top: 20px;
+          font-size: 1rem;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+      
+        button:hover {
+          background-color: #0056b3;
+        }
+      
+        #questions-container {
+          margin-top: 20px;
+        }
+      
+        .question-block {
+          padding: 15px;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          margin-bottom: 15px;
+          border: 1px solid #ddd;
+        }
+      
+        .question-block input {
+          margin-bottom: 10px;
+        }
+      
+        .confirmation-message {
+          margin-top: 30px;
+          background-color: #d4edda;
+          color: #155724;
+          padding: 15px;
+          text-align: center;
+          border-radius: 5px;
+          display: none;
+        }
+      
+        .confirmation-message.show {
+          display: block;
+        }
+      
+        .button-group {
+          display: flex;
+          justify-content: space-between;
+        }
+      
+        .button-group button {
+          width: 48%;
+        }
+      
+        /* Responsive styles */
+        @media (max-width: 768px) {
+          form {
+            padding: 20px;
+          }
+      
+          button {
+            font-size: 1rem;
+          }
+      
+          .button-group button {
+            width: 100%;
+            margin-top: 10px;
+          }
+        }
+      </style>
+      
+  <!-- </style> -->
+</head>
+<body>
+
+  <form id="quizForm" action="/submit-quiz" method="POST" enctype="multipart/form-data>
+    
+    <h1>Create Quiz</h1>
+    <label for="quizheading">Quiz Heading</label>
+    <input type="text" id="quizheading" name="quizheading" placeholder="Enter quiz heading" required>
+
+    <label for="numberquestion">Number of Questions</label>
+    <input type="number" id="numberquestion" name="numberquestion" placeholder="Enter total number of questions" required>
+
+    <div class="mb-3">
+      <label for="image" class="form-label"> Upload New Image</label>
+   <input type="file" name="avatar"  class="form-control">
+  </div>
+
+    <div id="questions-container"></div>
+
+    <button type="button" onclick="addQuestion()">Add Question</button>
+    <button type="button" onclick="removeQuestion()">Remove Last Question</button>
+    <button type="submit">Submit Quiz</button>
+  </form>
+
+  <div id="confirmation-container" class="confirmation-message" style="display: none;">
+    Quiz submitted successfully!
+  </div>
+
+  <script>
+    const questionsContainer = document.getElementById('questions-container');
+    const confirmationContainer = document.getElementById('confirmation-container');
+
+    function addQuestion() {
+      const questionIndex = questionsContainer.children.length;
+
+      const questionBlock = document.createElement('div');
+      questionBlock.className = 'question-block';
+      questionBlock.innerHTML = `  
+        <label>Question ${questionIndex + 1}</label>
+        <input type="text" name="questions[${questionIndex}][question]" placeholder="Enter question text" required>
+
+        <label>Options</label>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option 1" required>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option 2" required>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option 3" required>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option 4" required>
+
+        <label>Answer</label>
+        <input type="text" name="questions[${questionIndex}][answer]" placeholder="Correct answer" required>
+
+        <label>Difficulty Level</label>
+        <input type="text" name="questions[${questionIndex}][level]" placeholder="Easy, Medium, Hard" required>
+      `;
+      questionsContainer.appendChild(questionBlock);
+    }
+
+    function removeQuestion() {
+      if (questionsContainer.children.length > 0) {
+        questionsContainer.removeChild(questionsContainer.lastChild);
+      }
+    }
+  </script>
+</body>
+</html>

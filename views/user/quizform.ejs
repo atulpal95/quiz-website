@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Take Quiz</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
+    
+    
+    body {
+      background-color: #f0f4f8; 
+      font-family: 'Arial', sans-serif;
+      color: #333; 
+    }
+
+   
+    .container {
+      background-color: #ffffff;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 800px;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #007bff; 
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+   
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #dc3545; 
+      text-align: center;
+      margin-bottom: 30px;
+      background-color: #fff3cd; 
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    
+    .question-step {
+      display: none;
+    }
+
+    .question-step.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+   
+    .form-check {
+      margin: 15px 0;
+    }
+
+    .form-check-label {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .form-check-input {
+      margin-right: 10px;
+    }
+
+    
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    #prev-btn,
+    #next-btn,
+    #submit-btn {
+      min-width: 120px;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    #next-btn,
+    #prev-btn {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: white;
+    }
+
+    #submit-btn {
+      background-color: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+
+    #next-btn:hover,
+    #prev-btn:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+      cursor: pointer;
+      transform: translateY(-2px);
+    }
+
+    #submit-btn:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+      cursor: pointer;
+      transform: translateY(-2px);
+    }
+
+    
+    #prev-btn:disabled,
+    #next-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    
+    #submit-btn:active,
+    #next-btn:active,
+    #prev-btn:active {
+      transform: translateY(0);
+    }
+
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4"><%= quiz.quizheading %></h1>
+    <div class="timer" id="timer">Time Left: 00:00</div>
+    <form action="/submit-quiz/<%= quiz._id %>" method="POST" id="quiz-form">
+      <% quiz.questions.forEach((question, index) => { %>
+        <div class="question-step <%= index === 0 ? 'active' : '' %>" data-step="<%= index %>">
+          <h5>Q<%= index + 1 %>: <%= question.question %></h5>
+          <% question.options.forEach((option, optIndex) => { %>
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="answers[<%= index %>]" 
+                value="<%= option %>" 
+                id="question-<%= index %>-option-<%= optIndex %>">
+              <label class="form-check-label" for="question-<%= index %>-option-<%= optIndex %>">
+                <%= option %>
+              </label>
+            </div>
+          <% }); %>
+        </div>
+      <% }); %>
+      <div class="navigation-buttons">
+        <button type="button" class="btn btn-primary" id="prev-btn" disabled>Previous</button>
+        <button type="button" class="btn btn-primary" id="next-btn">Next</button>
+        <button type="submit" class="btn btn-success d-none" id="submit-btn">Submit</button>
+      </div> 
+    </form>
+  </div>
+
+  <script>
+    const questions = document.querySelectorAll('.question-step');
+    const timerElement = document.getElementById('timer');
+    const nextButton = document.getElementById('next-btn');
+    const prevButton = document.getElementById('prev-btn');
+    const submitButton = document.getElementById('submit-btn');
+    let currentStep = 0;
+    const totalQuestions = questions.length;
+    let totalTime = totalQuestions * 60; 
+    let timeLeft = totalTime; 
+
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerElement.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      timeLeft--;
+
+      
+      if (timeLeft < 0) {
+        submitButton.click(); 
+      }
+    }
+
+    function moveToNextStep() {
+      if (currentStep < questions.length - 1) {
+        questions[currentStep].classList.remove('active');
+        currentStep++;
+        questions[currentStep].classList.add('active');
+        updateNavigationButtons();
+      } else {
+        submitButton.click(); 
+      }
+    }
+
+    function moveToPrevStep() {
+      if (currentStep > 0) {
+        questions[currentStep].classList.remove('active');
+        currentStep--;
+        questions[currentStep].classList.add('active');
+        updateNavigationButtons();
+      }
+    }
+
+    function updateNavigationButtons() {
+      prevButton.disabled = currentStep === 0;
+      nextButton.style.display = currentStep === questions.length - 1 ? 'none' : 'inline-block';
+      submitButton.classList.toggle('d-none', currentStep !== questions.length - 1);
+    }
+
+    nextButton.addEventListener('click', moveToNextStep);
+    prevButton.addEventListener('click', moveToPrevStep);
+
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  </script>
+</body>
+</html>
